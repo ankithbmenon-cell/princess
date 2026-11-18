@@ -1,0 +1,1665 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Here's a Gift for U · Happy Princess Day</title>
+    <meta
+      name="description"
+      content="An interactive Princess Day gift box experience with sweet heart animations, keepsake notes, and gentle sound effects."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-pearl: #fbf7f4;
+        --bg-silk: #f4eae8;
+        --ink-espresso: #2d161d;
+        --ink-mauve: #74525b;
+        --accent-rose: #b83353;
+        --accent-rose-dark: #9f2946;
+        --accent-gold: #c49a6c;
+        --border-soft: #e6d5d6;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background-color: var(--bg-pearl);
+        color: var(--ink-espresso);
+        font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        line-height: 1.5;
+      }
+
+      .serif {
+        font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        font: inherit;
+        color: inherit;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+      }
+
+      button:focus-visible,
+      a:focus-visible {
+        outline: 2px solid var(--accent-rose);
+        outline-offset: 3px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      #hearts-canvas {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 40;
+      }
+
+      /* Keyframes */
+      @keyframes softFloat {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      @keyframes gentleHeartbeat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        14% {
+          transform: scale(1.07);
+        }
+        28% {
+          transform: scale(1);
+        }
+        42% {
+          transform: scale(1.045);
+        }
+        70% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes orbitSpin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes shimmerPulse {
+        0%,
+        100% {
+          opacity: 0.45;
+          transform: scale(0.96);
+        }
+        50% {
+          opacity: 0.85;
+          transform: scale(1.04);
+        }
+      }
+
+      @keyframes rippleExpand {
+        0% {
+          transform: scale(0.68);
+          opacity: 0.65;
+        }
+        100% {
+          transform: scale(1.34);
+          opacity: 0;
+        }
+      }
+
+      @keyframes fadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Initial Gift Box Stage */
+      .gift-stage {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 24px;
+        background: radial-gradient(circle at 50% 38%, #fffdf9 0%, #fbf7f4 55%, #f3e6e7 100%);
+        transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .gift-stage.leaving {
+        opacity: 0;
+        transform: scale(1.02);
+      }
+
+      .stage-topbar {
+        max-width: 1024px;
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .kicker {
+        font-size: 12px;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+        color: var(--ink-mauve);
+        font-weight: 500;
+      }
+
+      .btn-pill-soft {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-espresso);
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid var(--border-soft);
+        border-radius: 8px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease;
+      }
+
+      .btn-pill-soft:hover {
+        background: #ffffff;
+      }
+
+      .gift-center {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        max-width: 580px;
+        margin: 0 auto;
+        padding: 28px 0;
+      }
+
+      .gift-title {
+        font-size: clamp(2.8rem, 7vw, 4.5rem);
+        font-weight: 600;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin: 12px 0 0;
+        text-wrap: balance;
+      }
+
+      .gift-btn {
+        position: relative;
+        margin-top: 24px;
+        padding: 16px;
+        border-radius: 24px;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .gift-btn:hover {
+        transform: translateY(-4px) scale(1.03);
+      }
+
+      .gift-btn:active {
+        transform: scale(0.97);
+      }
+
+      .gift-glow {
+        position: absolute;
+        inset: 16px;
+        border-radius: 999px;
+        background: rgba(233, 200, 205, 0.52);
+        filter: blur(28px);
+        pointer-events: none;
+        animation: shimmerPulse 3.2s ease-in-out infinite;
+      }
+
+      .gift-svg-wrap {
+        position: relative;
+        width: 224px;
+        height: 224px;
+        animation: softFloat 4.2s ease-in-out infinite;
+      }
+
+      @media (min-width: 640px) {
+        .gift-svg-wrap {
+          width: 256px;
+          height: 256px;
+        }
+      }
+
+      .gift-lid-group {
+        transform-origin: 130px 100px;
+        transition: transform 0.62s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.62s ease;
+      }
+
+      .gift-stage.opening .gift-lid-group {
+        transform: translateY(-54px) rotate(-9deg);
+        opacity: 0;
+      }
+
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 13px 28px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #ffffff;
+        background: var(--accent-rose);
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(184, 51, 83, 0.24);
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease, transform 0.15s ease;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-rose-dark);
+      }
+
+      .btn-primary:active {
+        transform: scale(0.98);
+      }
+
+      .gift-hint {
+        margin: 12px 0 0;
+        font-size: 12px;
+        color: var(--ink-mauve);
+      }
+
+      /* Unwrapped Keepsake Experience */
+      .keepsake-page {
+        animation: fadeSlideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(251, 247, 244, 0.92);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-soft);
+      }
+
+      .header-inner {
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+      }
+
+      .brand-wordmark {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .nav-links {
+        display: none;
+        align-items: center;
+        gap: 28px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-mauve);
+      }
+
+      .nav-links a {
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--ink-espresso);
+      }
+
+      @media (min-width: 640px) {
+        .header-inner {
+          padding: 14px 32px;
+        }
+        .nav-links {
+          display: flex;
+        }
+      }
+
+      .btn-header {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #ffffff;
+        background: var(--accent-rose);
+        border-radius: 8px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease;
+      }
+
+      .btn-header:hover {
+        background: var(--accent-rose-dark);
+      }
+
+      .container {
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      @media (min-width: 640px) {
+        .container {
+          padding: 0 32px;
+        }
+      }
+
+      /* Hero & Sweet Heart Sanctuary */
+      .hero-section {
+        padding: 48px 0 56px;
+        border-bottom: 1px solid var(--border-soft);
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 40px;
+        align-items: center;
+      }
+
+      @media (min-width: 960px) {
+        .hero-section {
+          padding: 72px 0;
+        }
+        .hero-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 48px;
+        }
+      }
+
+      .hero-copy {
+        text-align: center;
+      }
+
+      @media (min-width: 960px) {
+        .hero-copy {
+          text-align: left;
+        }
+      }
+
+      .hero-headline {
+        font-size: clamp(2.25rem, 4.6vw, 3.6rem);
+        font-weight: 600;
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        margin: 16px 0 18px;
+        text-wrap: balance;
+      }
+
+      .hero-lead {
+        font-size: 16px;
+        line-height: 1.65;
+        color: var(--ink-mauve);
+        max-width: 520px;
+        margin: 0 auto 24px;
+      }
+
+      @media (min-width: 960px) {
+        .hero-lead {
+          margin: 0 0 24px;
+        }
+      }
+
+      .sweet-quote-box {
+        padding: 20px 24px;
+        border-radius: 16px;
+        background: rgba(244, 234, 232, 0.78);
+        border: 1px solid var(--border-soft);
+        max-width: 520px;
+        margin: 0 auto;
+      }
+
+      @media (min-width: 960px) {
+        .sweet-quote-box {
+          margin: 0;
+        }
+      }
+
+      .sweet-quote-label {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-mauve);
+        margin: 0 0 8px;
+      }
+
+      .sweet-quote-text {
+        font-size: 22px;
+        font-style: italic;
+        line-height: 1.35;
+        margin: 0;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+      }
+
+      .hero-meta-row {
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-size: 12px;
+        color: var(--ink-mauve);
+      }
+
+      @media (min-width: 960px) {
+        .hero-meta-row {
+          justify-content: flex-start;
+        }
+      }
+
+      .heart-stage {
+        position: relative;
+        width: 288px;
+        height: 288px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @media (min-width: 640px) {
+        .heart-stage {
+          width: 340px;
+          height: 340px;
+        }
+      }
+
+      .orbit-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        animation: orbitSpin 28s linear infinite;
+      }
+
+      .heart-ripple {
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 999px;
+        border: 1px solid rgba(184, 51, 83, 0.55);
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      .heart-ripple.active {
+        animation: rippleExpand 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      .heart-btn {
+        position: relative;
+        z-index: 2;
+        width: 224px;
+        height: 224px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .heart-btn:hover {
+        transform: scale(1.04);
+      }
+
+      .heart-btn:active {
+        transform: scale(0.93);
+      }
+
+      .heart-halo {
+        position: absolute;
+        inset: 16px;
+        border-radius: 999px;
+        background: rgba(233, 193, 200, 0.58);
+        filter: blur(28px);
+        animation: shimmerPulse 3.2s ease-in-out infinite;
+      }
+
+      .sweet-heart-svg {
+        position: relative;
+        width: 204px;
+        height: 204px;
+        filter: drop-shadow(0 16px 28px rgba(184, 51, 83, 0.28));
+        animation: gentleHeartbeat 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        overflow: visible;
+      }
+
+      /* Melody Bar */
+      .melody-strip {
+        padding: 22px 0;
+        border-bottom: 1px solid var(--border-soft);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      @media (min-width: 640px) {
+        .melody-strip {
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+
+      .melody-title {
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0 0 2px;
+      }
+
+      .melody-sub {
+        font-size: 12px;
+        color: var(--ink-mauve);
+        margin: 0;
+      }
+
+      .btn-melody {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 8px;
+        border: 1px solid var(--border-soft);
+        background: #ffffff;
+        color: var(--ink-espresso);
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      }
+
+      .btn-melody.playing {
+        background: var(--ink-espresso);
+        color: #ffffff;
+        border-color: var(--ink-espresso);
+      }
+
+      /* Section Headers */
+      .section-block {
+        padding: 52px 0;
+        border-bottom: 1px solid var(--border-soft);
+      }
+
+      .section-block.no-border {
+        border-bottom: none;
+      }
+
+      .section-head {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+
+      @media (min-width: 640px) {
+        .section-head {
+          flex-direction: row;
+          align-items: flex-end;
+        }
+      }
+
+      .section-title {
+        font-size: clamp(1.8rem, 3.2vw, 2.35rem);
+        font-weight: 600;
+        margin: 6px 0 0;
+        line-height: 1.15;
+      }
+
+      .section-desc {
+        font-size: 14px;
+        color: var(--ink-mauve);
+        max-width: 340px;
+        margin: 0;
+      }
+
+      /* Notes Grid */
+      .notes-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      @media (min-width: 768px) {
+        .notes-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .note-card {
+        text-align: left;
+        width: 100%;
+        min-height: 220px;
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px solid var(--border-soft);
+        background: rgba(244, 234, 232, 0.7);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .note-card:hover {
+        transform: translateY(-3px);
+        background: var(--bg-silk);
+      }
+
+      .note-card.open {
+        background: #ffffff;
+        border-color: rgba(196, 154, 108, 0.65);
+        box-shadow: 0 12px 30px rgba(74, 28, 42, 0.06);
+      }
+
+      .note-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .wax-dot {
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: var(--accent-rose);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+      }
+
+      .note-card.open .wax-dot {
+        background: transparent;
+        color: var(--accent-gold);
+      }
+
+      .note-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0 0 10px;
+      }
+
+      .note-body {
+        font-size: 15px;
+        line-height: 1.6;
+        color: rgba(45, 22, 29, 0.85);
+        margin: 0;
+      }
+
+      .note-prompt {
+        font-size: 14px;
+        font-style: italic;
+        color: var(--ink-mauve);
+        margin: 0;
+      }
+
+      .note-foot {
+        margin-top: 20px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(230, 213, 214, 0.8);
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--ink-mauve);
+      }
+
+      /* Treats Grid */
+      .treats-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      @media (min-width: 640px) {
+        .treats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .treat-card {
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px solid var(--border-soft);
+        background: rgba(255, 255, 255, 0.78);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 18px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+      }
+
+      .treat-card.claimed {
+        background: #ffffff;
+        border-color: var(--accent-gold);
+        box-shadow: 0 10px 26px rgba(196, 154, 108, 0.14);
+      }
+
+      .treat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .treat-status {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--accent-rose);
+      }
+
+      .treat-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0 0 8px;
+      }
+
+      .treat-detail {
+        font-size: 14px;
+        color: var(--ink-mauve);
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      .treat-foot {
+        padding-top: 12px;
+        border-top: 1px solid rgba(230, 213, 214, 0.75);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--ink-mauve);
+      }
+
+      .btn-treat {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 8px;
+        background: var(--accent-rose);
+        color: #ffffff;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: background-color 0.2s ease;
+      }
+
+      .btn-treat:hover {
+        background: var(--accent-rose-dark);
+      }
+
+      .treat-card.claimed .btn-treat {
+        background: var(--bg-silk);
+        color: var(--ink-espresso);
+      }
+
+      .treat-card.claimed .btn-treat:hover {
+        background: #ecdadd;
+      }
+
+      .treats-meta {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 12px;
+        color: var(--ink-mauve);
+      }
+
+      .link-reset {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        font-size: 12px;
+        color: var(--ink-mauve);
+      }
+
+      .link-reset:hover {
+        color: var(--ink-espresso);
+      }
+
+      .site-footer {
+        border-top: 1px solid var(--border-soft);
+        margin-top: 24px;
+      }
+
+      .footer-inner {
+        max-width: 1024px;
+        margin: 0 auto;
+        padding: 28px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 12px;
+        color: var(--ink-mauve);
+      }
+
+      @media (min-width: 640px) {
+        .footer-inner {
+          padding: 28px 32px;
+          flex-direction: row;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="hearts-canvas" aria-hidden="true"></canvas>
+
+    <!-- INITIAL PAGE: GIFT BOX -->
+    <main id="gift-stage" class="gift-stage">
+      <header class="stage-topbar">
+        <span class="kicker">November 18 · Princess Day</span>
+        <button id="mute-btn-intro" type="button" class="btn-pill-soft" aria-label="Toggle sound effects">
+          <span class="sound-label">Sound On</span>
+        </button>
+      </header>
+
+      <section class="gift-center">
+        <p class="kicker">A small surprise waiting inside</p>
+        <h1 class="serif gift-title">heres a gift for u</h1>
+
+        <button id="gift-box-btn" type="button" class="gift-btn" aria-label="Open your Princess Day gift box">
+          <div class="gift-glow" aria-hidden="true"></div>
+          <div class="gift-svg-wrap">
+            <svg viewBox="0 0 260 260" width="100%" height="100%" aria-hidden="true" style="overflow: visible; filter: drop-shadow(0 18px 32px rgba(74,28,42,0.14));">
+              <defs>
+                <linearGradient id="boxBase" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#fffaf8" />
+                  <stop offset="100%" stop-color="#f2e1e2" />
+                </linearGradient>
+                <linearGradient id="boxLid" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" />
+                  <stop offset="100%" stop-color="#f6e9ea" />
+                </linearGradient>
+                <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#c94061" />
+                  <stop offset="55%" stop-color="#b83353" />
+                  <stop offset="100%" stop-color="#8f213c" />
+                </linearGradient>
+                <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#d9b78c" />
+                  <stop offset="50%" stop-color="#c49a6c" />
+                  <stop offset="100%" stop-color="#a77d50" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="130" cy="230" rx="76" ry="11" fill="rgba(74,28,42,0.12)" />
+              <rect x="52" y="112" width="156" height="112" rx="10" fill="url(#boxBase)" stroke="#dfc8ca" stroke-width="1.5" />
+              <rect x="53" y="112" width="154" height="12" fill="rgba(74,28,42,0.06)" />
+              <rect x="115" y="112" width="30" height="112" fill="url(#ribbon)" />
+              <line x1="117" y1="112" x2="117" y2="224" stroke="url(#gold)" stroke-width="1.2" opacity="0.8" />
+              <line x1="143" y1="112" x2="143" y2="224" stroke="url(#gold)" stroke-width="1.2" opacity="0.8" />
+              <g transform="translate(154, 134) rotate(-8)">
+                <line x1="0" y1="-22" x2="6" y2="0" stroke="url(#gold)" stroke-width="1.5" />
+                <rect x="-14" y="0" width="54" height="32" rx="5" fill="#fffdf9" stroke="url(#gold)" stroke-width="1.3" />
+                <circle cx="8" cy="6" r="2" fill="#c49a6c" />
+                <path d="M13 15.5 C11 13, 7 14, 7 17 C7 20, 13 24, 13 24 C13 24, 19 20, 19 17 C19 14, 15 13, 13 15.5 Z" fill="#b83353" />
+              </g>
+              <g class="gift-lid-group">
+                <rect x="42" y="84" width="176" height="34" rx="8" fill="url(#boxLid)" stroke="#dcc3c5" stroke-width="1.5" />
+                <rect x="115" y="84" width="30" height="34" fill="url(#ribbon)" />
+                <line x1="117" y1="84" x2="117" y2="118" stroke="url(#gold)" stroke-width="1.2" opacity="0.85" />
+                <line x1="143" y1="84" x2="143" y2="118" stroke="url(#gold)" stroke-width="1.2" opacity="0.85" />
+                <path d="M130 84 C104 82, 74 58, 86 43 C97 30, 122 54, 130 78 Z" fill="url(#ribbon)" stroke="#8f213c" stroke-width="1" />
+                <path d="M126 79 C108 75, 92 60, 96 51 C102 45, 118 59, 126 76" fill="none" stroke="url(#gold)" stroke-width="1.1" opacity="0.7" />
+                <path d="M130 84 C156 82, 186 58, 174 43 C163 30, 138 54, 130 78 Z" fill="url(#ribbon)" stroke="#8f213c" stroke-width="1" />
+                <path d="M134 79 C152 75, 168 60, 164 51 C158 45, 142 59, 134 76" fill="none" stroke="url(#gold)" stroke-width="1.1" opacity="0.7" />
+                <rect x="120" y="71" width="20" height="16" rx="6" fill="#9e2543" stroke="url(#gold)" stroke-width="1.2" />
+              </g>
+            </svg>
+          </div>
+        </button>
+
+        <div style="margin-top: 20px; display: flex; flex-direction: column; align-items: center;">
+          <button id="open-gift-btn" type="button" class="btn-primary">Open Gift</button>
+          <p class="gift-hint">Tap the gift box to unwrap your Princess Day surprise</p>
+        </div>
+      </section>
+
+      <footer style="text-align: center; font-size: 12px; color: var(--ink-mauve);">
+        Made thoughtfully for today
+      </footer>
+    </main>
+
+    <!-- UNWRAPPED KEEPSAKE PAGE -->
+    <div id="keepsake-page" class="keepsake-page hidden">
+      <header class="site-header">
+        <div class="header-inner">
+          <a href="#heart" class="serif brand-wordmark">Princess Day</a>
+          <nav class="nav-links" aria-label="Primary navigation">
+            <a href="#heart">Heart</a>
+            <a href="#notes">Notes</a>
+            <a href="#treats">Treats</a>
+          </nav>
+          <button id="mute-btn-main" type="button" class="btn-header" aria-label="Toggle sound effects">
+            <span class="sound-label">Sound On</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="container">
+        <!-- Heart Sanctuary -->
+        <section id="heart" class="hero-section" aria-labelledby="heart-heading">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <p class="kicker">Princess Day · November 18</p>
+              <h1 id="heart-heading" class="serif hero-headline">
+                Made for someone who makes every day feel brighter
+              </h1>
+              <p class="hero-lead">
+                No grand speeches needed—just a quiet little space crafted for you today, with warm notes, small treats, and a sweet heart that blooms every time you tap it.
+              </p>
+
+              <div class="sweet-quote-box">
+                <p id="sweet-quote-label" class="sweet-quote-label">Sweet Note 01 of 06</p>
+                <p id="sweet-quote-text" class="serif sweet-quote-text">
+                  “Your smile is genuinely my favorite sight in the world.”
+                </p>
+              </div>
+
+              <div class="hero-meta-row">
+                <span>Tap the sweet heart to bloom</span>
+                <span aria-hidden="true">·</span>
+                <span id="bloom-count" style="font-variant-numeric: tabular-nums;">0 blooms sent</span>
+              </div>
+            </div>
+
+            <div class="heart-stage">
+              <svg viewBox="0 0 320 320" class="orbit-svg" aria-hidden="true">
+                <circle cx="160" cy="160" r="142" fill="none" stroke="#c49a6c" stroke-width="1" stroke-dasharray="3 9" opacity="0.55" />
+                <circle cx="160" cy="18" r="3.5" fill="#c49a6c" opacity="0.85" />
+                <circle cx="302" cy="160" r="2.5" fill="#b83353" opacity="0.7" />
+                <circle cx="160" cy="302" r="3.5" fill="#c49a6c" opacity="0.85" />
+                <circle cx="18" cy="160" r="2.5" fill="#b83353" opacity="0.7" />
+              </svg>
+              <span id="heart-ripple" class="heart-ripple" aria-hidden="true"></span>
+              <button id="sweet-heart-btn" type="button" class="heart-btn" aria-label="Tap the sweet heart to bloom and chime">
+                <div class="heart-halo" aria-hidden="true"></div>
+                <svg viewBox="0 0 220 210" class="sweet-heart-svg" aria-hidden="true">
+                  <defs>
+                    <radialGradient id="heartGrad" cx="38%" cy="32%" r="72%">
+                      <stop offset="0%" stop-color="#e86b86" />
+                      <stop offset="48%" stop-color="#b83353" />
+                      <stop offset="100%" stop-color="#7a1b34" />
+                    </radialGradient>
+                    <linearGradient id="crownGold" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#ebd3b3" />
+                      <stop offset="50%" stop-color="#c49a6c" />
+                      <stop offset="100%" stop-color="#9c7346" />
+                    </linearGradient>
+                  </defs>
+                  <g transform="translate(110, 26)">
+                    <path d="M-24 8 L-18 -8 L-8 2 L0 -14 L8 2 L18 -8 L24 8 Z" fill="none" stroke="url(#crownGold)" stroke-width="2" stroke-linejoin="round" />
+                    <circle cx="0" cy="-16" r="2.6" fill="#c49a6c" />
+                    <circle cx="-18" cy="-10" r="2" fill="#c49a6c" />
+                    <circle cx="18" cy="-10" r="2" fill="#c49a6c" />
+                  </g>
+                  <path
+                    d="M110 188 C110 188 22 132 22 72 C22 43 45 24 72 24 C90 24 103 34 110 47 C117 34 130 24 148 24 C175 24 198 43 198 72 C198 132 110 188 110 188 Z"
+                    fill="none"
+                    stroke="url(#crownGold)"
+                    stroke-width="1.5"
+                    opacity="0.7"
+                    transform="scale(1.06) translate(-6.5, -6)"
+                  />
+                  <path
+                    d="M110 184 C110 184 26 130 26 73 C26 46 47 28 73 28 C90 28 103 38 110 50 C117 38 130 28 147 28 C173 28 194 46 194 73 C194 130 110 184 110 184 Z"
+                    fill="url(#heartGrad)"
+                  />
+                  <path d="M52 68 C52 51 66 41 81 44" fill="none" stroke="rgba(255,255,255,0.42)" stroke-width="4.5" stroke-linecap="round" />
+                  <path
+                    d="M110 172 C110 172 38 123 38 74 C38 53 54 39 74 39 C89 39 101 48 110 61 C119 48 131 39 146 39 C166 39 182 53 182 74 C182 123 110 172 110 172 Z"
+                    fill="none"
+                    stroke="rgba(255,244,240,0.22)"
+                    stroke-width="1.2"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Music Box Strip -->
+        <section class="melody-strip" aria-label="Music box control">
+          <div>
+            <p class="melody-title">Gentle Music Box Melody</p>
+            <p class="melody-sub">Play a soft synthesized waltz while you read · Tap anywhere on the page for sparkle chimes</p>
+          </div>
+          <button id="melody-btn" type="button" class="btn-melody">Play Melody</button>
+        </section>
+
+        <!-- Sealed Notes -->
+        <section id="notes" class="section-block" aria-labelledby="notes-heading">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Sealed Stationery</p>
+              <h2 id="notes-heading" class="serif section-title">Three Little Notes for Today</h2>
+            </div>
+            <p class="section-desc">Tap each wax-sealed card to open and read what is tucked inside.</p>
+          </div>
+          <div id="notes-grid" class="notes-grid"></div>
+        </section>
+
+        <!-- Treat Vouchers -->
+        <section id="treats" class="section-block no-border" aria-labelledby="treats-heading">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Redeemable Anytime</p>
+              <h2 id="treats-heading" class="serif section-title">Princess Day Treat Vouchers</h2>
+            </div>
+            <div class="treats-meta">
+              <span id="treats-count" style="font-variant-numeric: tabular-nums;">0 of 4 claimed</span>
+              <button id="reset-treats-btn" type="button" class="link-reset hidden">Reset Treats</button>
+            </div>
+          </div>
+          <div id="treats-grid" class="treats-grid"></div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-inner">
+          <p style="margin: 0;">Happy Princess Day · Made just for you</p>
+          <button id="rewrap-btn" type="button" class="link-reset">Wrap Gift Again</button>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        // 1. Web Audio Synthesizer (zero external files)
+        const Sound = {
+          ctx: null,
+          muted: false,
+          melodyPlaying: false,
+          melodyTimer: null,
+          melodyStep: 0,
+          ensure() {
+            if (this.muted) return null;
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return null;
+            if (!this.ctx) this.ctx = new Ctx();
+            if (this.ctx.state === 'suspended') this.ctx.resume().catch(function () {});
+            return this.ctx;
+          },
+          tone(freq, offset, dur, vol, type, attack) {
+            const ctx = this.ensure();
+            if (!ctx) return;
+            const now = ctx.currentTime + offset;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type || 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.0001, now);
+            gain.gain.linearRampToValueAtTime(vol, now + (attack || 0.015));
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + dur + 0.05);
+          },
+          giftOpen() {
+            if (this.muted) return;
+            [349.23, 440, 523.25, 659.25, 783.99, 880, 1046.5].forEach((f, i) => {
+              this.tone(f, i * 0.07, 0.95, 0.085, 'triangle', 0.01);
+              this.tone(f * 2, i * 0.07 + 0.015, 0.6, 0.025, 'sine', 0.01);
+            });
+            [174.61, 261.63, 329.63].forEach((f) => this.tone(f, 0.05, 1.5, 0.045, 'sine', 0.12));
+          },
+          heartBloom(step) {
+            if (this.muted) return;
+            const ctx = this.ensure();
+            if (ctx) {
+              const now = ctx.currentTime;
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(110, now);
+              osc.frequency.exponentialRampToValueAtTime(52, now + 0.16);
+              gain.gain.setValueAtTime(0.0001, now);
+              gain.gain.linearRampToValueAtTime(0.14, now + 0.012);
+              gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(now);
+              osc.stop(now + 0.2);
+            }
+            const scale = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];
+            const root = scale[step % scale.length];
+            this.tone(root, 0.04, 0.65, 0.075, 'triangle', 0.01);
+            this.tone(root * 1.5, 0.09, 0.55, 0.035, 'sine', 0.01);
+          },
+          unseal() {
+            if (this.muted) return;
+            const ctx = this.ensure();
+            if (ctx) {
+              const len = Math.floor(ctx.sampleRate * 0.09);
+              const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+              const d = buf.getChannelData(0);
+              for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+              const src = ctx.createBufferSource();
+              src.buffer = buf;
+              const filter = ctx.createBiquadFilter();
+              filter.type = 'bandpass';
+              filter.frequency.value = 1800;
+              const g = ctx.createGain();
+              g.gain.setValueAtTime(0.06, ctx.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
+              src.connect(filter);
+              filter.connect(g);
+              g.connect(ctx.destination);
+              src.start();
+            }
+            this.tone(659.25, 0.02, 0.42, 0.065, 'triangle', 0.01);
+            this.tone(880, 0.09, 0.55, 0.06, 'sine', 0.01);
+          },
+          claim() {
+            if (this.muted) return;
+            [587.33, 739.99, 880, 1174.66].forEach((f, i) => this.tone(f, i * 0.055, 0.5, 0.07, 'triangle', 0.008));
+          },
+          softTap(idx) {
+            if (this.muted) return;
+            const notes = [659.25, 783.99, 880, 1046.5, 1174.66];
+            this.tone(notes[idx % notes.length], 0, 0.35, 0.035, 'sine', 0.008);
+          },
+          startMelody() {
+            if (this.muted || this.melodyPlaying) return;
+            this.ensure();
+            this.melodyPlaying = true;
+            const seq = [
+              523.25, 659.25, 783.99, 880, 783.99, 659.25,
+              587.33, 698.46, 880, 1046.5, 880, 698.46,
+              523.25, 659.25, 880, 783.99, 659.25, 523.25,
+              440, 523.25, 659.25, 587.33, null, null,
+            ];
+            const stepFn = () => {
+              if (!this.melodyPlaying || this.muted) return;
+              const n = seq[this.melodyStep % seq.length];
+              if (n) {
+                this.tone(n, 0, 0.85, 0.035, 'sine', 0.012);
+                this.tone(n * 2, 0.01, 0.35, 0.009, 'triangle', 0.01);
+              }
+              if (this.melodyStep % 6 === 0) {
+                this.tone(this.melodyStep % 12 === 0 ? 174.61 : 220, 0, 1.4, 0.024, 'sine', 0.04);
+              }
+              this.melodyStep += 1;
+              this.melodyTimer = setTimeout(stepFn, 430);
+            };
+            stepFn();
+          },
+          stopMelody() {
+            this.melodyPlaying = false;
+            if (this.melodyTimer) {
+              clearTimeout(this.melodyTimer);
+              this.melodyTimer = null;
+            }
+          },
+        };
+
+        // 2. Ambient & Burst Floating Hearts Canvas
+        const canvas = document.getElementById('hearts-canvas');
+        const ctx = canvas.getContext('2d');
+        const colors = [
+          'rgba(184, 51, 83, 0.72)',
+          'rgba(212, 118, 138, 0.72)',
+          'rgba(196, 154, 108, 0.75)',
+          'rgba(155, 41, 70, 0.65)',
+        ];
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let particles = [];
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+
+        function resizeCanvas() {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          w = window.innerWidth;
+          h = window.innerHeight;
+          canvas.width = w * dpr;
+          canvas.height = h * dpr;
+          canvas.style.width = w + 'px';
+          canvas.style.height = h + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function burstHearts(x, y, count) {
+          if (reducedMotion) return;
+          for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+            const speed = 1.4 + Math.random() * 3.6;
+            const isSpark = i % 3 === 0;
+            particles.push({
+              x: x,
+              y: y,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed - 1.6,
+              size: isSpark ? 2.5 + Math.random() * 2.5 : 8 + Math.random() * 11,
+              opacity: 0.95,
+              fade: 0.008 + Math.random() * 0.008,
+              rot: (Math.random() - 0.5) * 0.8,
+              vRot: (Math.random() - 0.5) * 0.04,
+              kind: isSpark ? 'spark' : 'heart',
+              color: colors[i % colors.length],
+              phase: Math.random() * Math.PI * 2,
+              sway: 0.03 + Math.random() * 0.03,
+            });
+          }
+        }
+
+        function spawnAmbient(randomY) {
+          return {
+            x: Math.random() * w,
+            y: randomY ? Math.random() * h : h + 25,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: -(0.45 + Math.random() * 0.65),
+            size: 6 + Math.random() * 7,
+            opacity: 0.22 + Math.random() * 0.25,
+            fade: 0.0008,
+            rot: (Math.random() - 0.5) * 0.5,
+            vRot: (Math.random() - 0.5) * 0.008,
+            kind: Math.random() > 0.25 ? 'heart' : 'spark',
+            color: colors[Math.floor(Math.random() * colors.length)],
+            phase: Math.random() * Math.PI * 2,
+            sway: 0.015 + Math.random() * 0.015,
+          };
+        }
+
+        if (!reducedMotion) {
+          for (let i = 0; i < 12; i++) particles.push(spawnAmbient(true));
+        }
+
+        let frame = 0;
+        function animateCanvas() {
+          ctx.clearRect(0, 0, w, h);
+          frame += 1;
+          if (!reducedMotion && frame % 48 === 0 && particles.length < 48) {
+            particles.push(spawnAmbient(false));
+          }
+          const next = [];
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            p.phase += p.sway;
+            p.x += p.vx + Math.sin(p.phase) * 0.35;
+            p.y += p.vy;
+            if (p.fade > 0.004) p.vy += 0.035;
+            p.rot += p.vRot;
+            p.opacity -= p.fade;
+            if (p.opacity > 0.01 && p.y > -40 && p.y < h + 100) {
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.rot);
+              ctx.globalAlpha = Math.max(0, Math.min(1, p.opacity));
+              if (p.kind === 'heart') {
+                ctx.fillStyle = p.color;
+                const s = p.size;
+                ctx.beginPath();
+                ctx.moveTo(0, s * 0.3);
+                ctx.bezierCurveTo(-s * 0.5, -s * 0.25, -s, s * 0.2, 0, s);
+                ctx.bezierCurveTo(s, s * 0.2, s * 0.5, -s * 0.25, 0, s * 0.3);
+                ctx.closePath();
+                ctx.fill();
+              } else {
+                ctx.fillStyle = '#c49a6c';
+                ctx.beginPath();
+                ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+                ctx.fill();
+              }
+              ctx.restore();
+              next.push(p);
+            }
+          }
+          particles = next;
+          requestAnimationFrame(animateCanvas);
+        }
+        requestAnimationFrame(animateCanvas);
+
+        // 3. Gift Box Unwrap & Sound Toggle
+        const giftStage = document.getElementById('gift-stage');
+        const keepsakePage = document.getElementById('keepsake-page');
+        const giftBtn = document.getElementById('gift-box-btn');
+        const openBtn = document.getElementById('open-gift-btn');
+        const muteBtns = [document.getElementById('mute-btn-intro'), document.getElementById('mute-btn-main')];
+        const melodyBtn = document.getElementById('melody-btn');
+        let isOpening = false;
+
+        function syncMuteUI() {
+          document.querySelectorAll('.sound-label').forEach(function (el) {
+            el.textContent = Sound.muted ? 'Sound Off' : 'Sound On';
+          });
+          if (Sound.muted) {
+            melodyBtn.classList.remove('playing');
+            melodyBtn.textContent = 'Play Melody';
+          }
+        }
+
+        muteBtns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            Sound.muted = !Sound.muted;
+            if (Sound.muted) {
+              Sound.stopMelody();
+            } else {
+              Sound.softTap(2);
+            }
+            syncMuteUI();
+          });
+        });
+
+        function openGift(e) {
+          if (isOpening) return;
+          isOpening = true;
+          openBtn.textContent = 'Opening...';
+          giftStage.classList.add('opening');
+          const rect = giftBtn.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          setTimeout(function () {
+            Sound.giftOpen();
+            burstHearts(cx, cy, 36);
+            giftStage.classList.add('leaving');
+            setTimeout(function () {
+              giftStage.classList.add('hidden');
+              keepsakePage.classList.remove('hidden');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 320);
+          }, 560);
+        }
+
+        giftBtn.addEventListener('click', openGift);
+        openBtn.addEventListener('click', openGift);
+
+        document.getElementById('rewrap-btn').addEventListener('click', function () {
+          Sound.stopMelody();
+          melodyBtn.classList.remove('playing');
+          melodyBtn.textContent = 'Play Melody';
+          isOpening = false;
+          openBtn.textContent = 'Open Gift';
+          giftStage.classList.remove('opening', 'leaving', 'hidden');
+          keepsakePage.classList.add('hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 4. Sweet Heart Interaction
+        const sweetLines = [
+          'Your smile is genuinely my favorite sight in the world.',
+          'You deserve all the softness, warmth, and good things today.',
+          'Thank you for bringing so much light into every room you enter.',
+          'Every ordinary moment turns into something special around you.',
+          'Stay radiant, stay happy, and never forget how cherished you are.',
+          'Today is all about celebrating the wonderful person you are.',
+        ];
+        let beatCount = 0;
+        const heartBtn = document.getElementById('sweet-heart-btn');
+        const heartRipple = document.getElementById('heart-ripple');
+        const quoteLabel = document.getElementById('sweet-quote-label');
+        const quoteText = document.getElementById('sweet-quote-text');
+        const bloomEl = document.getElementById('bloom-count');
+
+        heartBtn.addEventListener('click', function () {
+          beatCount += 1;
+          const rect = heartBtn.getBoundingClientRect();
+          Sound.heartBloom(beatCount);
+          burstHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 20);
+
+          heartRipple.classList.remove('active');
+          void heartRipple.offsetWidth;
+          heartRipple.classList.add('active');
+
+          const idx = beatCount % sweetLines.length;
+          quoteLabel.textContent = 'Sweet Note ' + String(idx + 1).padStart(2, '0') + ' of 06';
+          quoteText.textContent = '“' + sweetLines[idx] + '”';
+          bloomEl.textContent = beatCount + (beatCount === 1 ? ' bloom sent' : ' blooms sent');
+        });
+
+        // 5. Music Box Toggle
+        melodyBtn.addEventListener('click', function () {
+          if (Sound.muted) {
+            Sound.muted = false;
+            syncMuteUI();
+          }
+          if (Sound.melodyPlaying) {
+            Sound.stopMelody();
+            melodyBtn.classList.remove('playing');
+            melodyBtn.textContent = 'Play Melody';
+          } else {
+            Sound.startMelody();
+            melodyBtn.classList.add('playing');
+            melodyBtn.textContent = 'Pause Melody';
+          }
+        });
+
+        // 6. Three Sealed Notes
+        const notesData = [
+          {
+            index: 'Note 01',
+            title: 'For Your Smile',
+            message: 'Whenever today feels busy or loud, pause for a breath and remember someone is endlessly grateful you exist.',
+          },
+          {
+            index: 'Note 02',
+            title: 'For Your Grace',
+            message: 'The quiet kindness you show in the smallest details makes everyone around you feel lucky just to know you.',
+          },
+          {
+            index: 'Note 03',
+            title: 'For Today',
+            message: 'No paper crown required—your warmth, your laugh, and the way you carry yourself already outshine the room.',
+          },
+        ];
+        const notesGrid = document.getElementById('notes-grid');
+        notesData.forEach(function (note) {
+          let open = false;
+          const card = document.createElement('button');
+          card.type = 'button';
+          card.className = 'note-card';
+          card.setAttribute('aria-expanded', 'false');
+
+          function renderNote() {
+            card.classList.toggle('open', open);
+            card.setAttribute('aria-expanded', String(open));
+            card.innerHTML =
+              '<div>' +
+                '<div class="note-top">' +
+                  '<span class="kicker">' + note.index + '</span>' +
+                  '<span class="wax-dot" aria-hidden="true">' + (open ? '✦' : '♥') + '</span>' +
+                '</div>' +
+                '<h3 class="serif note-title">' + note.title + '</h3>' +
+                (open
+                  ? '<p class="note-body">' + note.message + '</p>'
+                  : '<p class="note-prompt">Tap to break the seal</p>') +
+              '</div>' +
+              '<div class="note-foot">' +
+                '<span>' + (open ? 'Opened' : 'Sealed') + '</span>' +
+                '<span>' + (open ? 'Tap to fold' : 'Open note') + '</span>' +
+              '</div>';
+          }
+
+          card.addEventListener('click', function () {
+            open = !open;
+            if (open) {
+              const r = card.getBoundingClientRect();
+              Sound.unseal();
+              burstHearts(r.left + r.width / 2, r.top + 32, 12);
+            }
+            renderNote();
+          });
+
+          renderNote();
+          notesGrid.appendChild(card);
+        });
+
+        // 7. Treat Vouchers (localStorage persisted)
+        const treatsData = [
+          {
+            id: 'sweet-craving',
+            code: 'Treat 01',
+            title: 'Sweet Craving Run',
+            detail: 'Any dessert, boba, pastry, or iced drink you want—delivered with zero hesitation.',
+          },
+          {
+            id: 'movie-night',
+            code: 'Treat 02',
+            title: 'Your Pick Movie Night',
+            detail: 'Full remote control privileges, cozy blankets, and every snack on your list.',
+          },
+          {
+            id: 'dinner-choice',
+            code: 'Treat 03',
+            title: 'Dinner of Your Choice',
+            detail: 'Your favorite spot, a brand-new restaurant, or takeout in pajamas—you decide.',
+          },
+          {
+            id: 'princess-treatment',
+            code: 'Treat 04',
+            title: 'Full Princess Treatment',
+            detail: 'Zero chores, extra patience, and full royal spoiling whenever you redeem this.',
+          },
+        ];
+        const STORE_KEY = 'princess_day_claimed_treats_v1';
+        let claimed = {};
+        try {
+          const raw = localStorage.getItem(STORE_KEY);
+          if (raw) claimed = JSON.parse(raw);
+        } catch (e) {}
+
+        const treatsGrid = document.getElementById('treats-grid');
+        const treatsCountEl = document.getElementById('treats-count');
+        const resetBtn = document.getElementById('reset-treats-btn');
+
+        function renderTreats() {
+          treatsGrid.innerHTML = '';
+          let count = 0;
+          treatsData.forEach(function (treat) {
+            const isClaimed = !!claimed[treat.id];
+            if (isClaimed) count += 1;
+
+            const card = document.createElement('div');
+            card.className = 'treat-card' + (isClaimed ? ' claimed' : '');
+            card.innerHTML =
+              '<div>' +
+                '<div class="treat-top">' +
+                  '<span class="kicker">' + treat.code + '</span>' +
+                  '<span class="treat-status">' + (isClaimed ? 'Claimed' : 'Ready') + '</span>' +
+                '</div>' +
+                '<h3 class="serif treat-title">' + treat.title + '</h3>' +
+                '<p class="treat-detail">' + treat.detail + '</p>' +
+              '</div>' +
+              '<div class="treat-foot">' +
+                '<span>No expiration</span>' +
+                '<button type="button" class="btn-treat">' + (isClaimed ? '✓ Claimed' : 'Claim Treat') + '</button>' +
+              '</div>';
+
+            const btn = card.querySelector('.btn-treat');
+            btn.addEventListener('click', function () {
+              const was = !!claimed[treat.id];
+              claimed[treat.id] = !was;
+              try {
+                localStorage.setItem(STORE_KEY, JSON.stringify(claimed));
+              } catch (e) {}
+              if (!was) {
+                const r = btn.getBoundingClientRect();
+                Sound.claim();
+                burstHearts(r.left + r.width / 2, r.top + r.height / 2, 24);
+              }
+              renderTreats();
+            });
+            treatsGrid.appendChild(card);
+          });
+
+          treatsCountEl.textContent = count + ' of ' + treatsData.length + ' claimed';
+          resetBtn.classList.toggle('hidden', count === 0);
+        }
+
+        resetBtn.addEventListener('click', function () {
+          claimed = {};
+          try {
+            localStorage.setItem(STORE_KEY, '{}');
+          } catch (e) {}
+          renderTreats();
+        });
+        renderTreats();
+
+        // 8. Tap anywhere on unwrapped page for sparkle chimes
+        let tapIdx = 0;
+        document.addEventListener('click', function (e) {
+          if (keepsakePage.classList.contains('hidden')) return;
+          if (e.target.closest('button, a')) return;
+          tapIdx += 1;
+          Sound.softTap(tapIdx);
+          burstHearts(e.clientX, e.clientY, 7);
+        });
+      })();
+    </script>
+  </body>
+</html>
